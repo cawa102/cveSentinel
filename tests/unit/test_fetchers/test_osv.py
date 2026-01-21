@@ -486,7 +486,7 @@ class TestOSVClient:
             client.query("test", "npm")
 
         assert "timeout" in str(exc_info.value).lower()
-        assert mock_post.call_count == 3  # MAX_RETRIES
+        assert mock_post.call_count == 5  # MAX_RETRIES
 
     @patch("requests.Session.post")
     def test_caching(
