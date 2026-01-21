@@ -48,14 +48,19 @@ class TestParser:
     def test_parser_scan_with_options(self) -> None:
         """Test scan command with options."""
         parser = create_parser()
-        args = parser.parse_args([
-            "scan",
-            "/tmp/project",
-            "--level", "2",
-            "--exclude", "test/*",
-            "--verbose",
-            "--fail-on", "CRITICAL"
-        ])
+        args = parser.parse_args(
+            [
+                "scan",
+                "/tmp/project",
+                "--level",
+                "2",
+                "--exclude",
+                "test/*",
+                "--verbose",
+                "--fail-on",
+                "CRITICAL",
+            ]
+        )
         assert args.command == "scan"
         assert args.path == Path("/tmp/project")
         assert args.level == 2
@@ -206,10 +211,14 @@ class TestScanCommand:
     def test_scan_with_package_json(self, tmp_path: Path) -> None:
         """Test scan with package.json."""
         package_json = tmp_path / "package.json"
-        package_json.write_text(json.dumps({
-            "name": "test",
-            "dependencies": {"lodash": "4.17.21"},
-        }))
+        package_json.write_text(
+            json.dumps(
+                {
+                    "name": "test",
+                    "dependencies": {"lodash": "4.17.21"},
+                }
+            )
+        )
 
         parser = create_parser()
         args = parser.parse_args(["scan", str(tmp_path)])
@@ -278,10 +287,12 @@ class TestUninstallCommand:
         args = parser.parse_args(["uninstall", "--yes"])
 
         # Mock subprocess and file operations
-        with patch("subprocess.run") as mock_run, \
-             patch("pathlib.Path.exists") as mock_exists, \
-             patch("pathlib.Path.unlink"), \
-             patch("builtins.open", MagicMock()):
+        with (
+            patch("subprocess.run") as mock_run,
+            patch("pathlib.Path.exists") as mock_exists,
+            patch("pathlib.Path.unlink"),
+            patch("builtins.open", MagicMock()),
+        ):
             mock_run.return_value = MagicMock(returncode=0)
             mock_exists.return_value = False
 
@@ -349,6 +360,7 @@ class TestConfigTemplate:
     def test_config_template_valid_yaml(self) -> None:
         """Test config template is valid YAML."""
         import yaml
+
         config = yaml.safe_load(CONFIG_TEMPLATE)
         assert config is not None
         assert "target_path" in config
@@ -358,6 +370,7 @@ class TestConfigTemplate:
     def test_config_template_default_values(self) -> None:
         """Test config template has sensible defaults."""
         import yaml
+
         config = yaml.safe_load(CONFIG_TEMPLATE)
         assert config["target_path"] == "."
         assert config["analysis_level"] == 2
