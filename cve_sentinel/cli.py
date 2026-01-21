@@ -5,15 +5,14 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import List, Optional
 
+from cve_sentinel.config import ConfigError, load_config
 from cve_sentinel.scanner import CVESentinelScanner, __version__, setup_logging
-from cve_sentinel.config import Config, load_config, ConfigError
 
 logger = logging.getLogger(__name__)
 
@@ -285,14 +284,14 @@ def cmd_update(args: argparse.Namespace) -> int:
     try:
         cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "cve-sentinel"]
         if args.verbose:
-            result = subprocess.run(cmd)
+            result = subprocess.run(cmd, text=True)
         else:
             result = subprocess.run(cmd, capture_output=True, text=True)
 
         if result.returncode == 0:
             print("CVE Sentinel package updated successfully")
         else:
-            if hasattr(result, "stderr") and result.stderr:
+            if result.stderr:
                 print(f"Update failed: {result.stderr}")
             return 1
 
@@ -485,7 +484,7 @@ def main(args: Optional[List[str]] = None) -> int:
     known_commands = {"scan", "init", "uninstall", "update"}
     if args and args[0] not in known_commands and not args[0].startswith("-"):
         # First arg looks like a path, prepend "scan"
-        args = ["scan"] + args
+        args = ["scan", *args]
 
     parsed_args = parser.parse_args(args)
 

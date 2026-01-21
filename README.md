@@ -46,21 +46,28 @@ Every day, new vulnerabilities are discovered in popular packages. **CVE Sentine
 pip install cve-sentinel
 ```
 
-### Option 1: Auto-scan with Claude Code (Recommended)
+### Scan Your Project
+
+```bash
+# Scan current directory
+cve-sentinel scan
+
+# Scan a specific directory
+cve-sentinel scan /path/to/project
+
+# Scan with options
+cve-sentinel scan /path/to/project --level 2 --exclude node_modules --exclude .venv
+```
+
+No configuration file required - just run and scan!
+
+### Auto-scan with Claude Code (Optional)
 
 ```bash
 cve-sentinel init
 ```
 
-This sets up a **SessionStart Hook** - CVE Sentinel will automatically scan your project every time you launch Claude Code. No manual intervention needed!
-
-### Option 2: Manual Scan
-
-```bash
-cve-sentinel scan
-```
-
-Run anytime from your terminal to check for vulnerabilities on demand.
+This sets up a **SessionStart Hook** - CVE Sentinel will automatically scan your project every time you launch Claude Code.
 
 ---
 
@@ -102,26 +109,63 @@ Choose the depth of analysis that fits your needs:
 | Level | What It Scans | Best For |
 |:-----:|:--------------|:---------|
 | **1** | Manifest files only | Quick CI checks |
-| **2** | + Lock files (transitive deps) | Regular development |
+| **2** | + Lock files (transitive deps) | Regular development (default) |
 | **3** | + Source code imports | Pre-release audits |
 
 ```bash
-# Quick scan (Level 1)
+# Quick scan - manifest files only (Level 1)
 cve-sentinel scan --level 1
 
-# Deep scan with source analysis (Level 3)
+# Standard scan - includes lock files (Level 2, default)
+cve-sentinel scan
+
+# Deep scan - includes source code analysis (Level 3)
 cve-sentinel scan --level 3
+
+# Scan specific directory with level
+cve-sentinel scan /path/to/project --level 3
 ```
 
 ---
 
-## Configuration
+## Usage
 
-Create `.cve-sentinel.yaml` in your project root:
+```bash
+cve-sentinel scan [PATH] [OPTIONS]
+```
+
+| Option | Description |
+|--------|-------------|
+| `PATH` | Target directory to scan (default: current directory) |
+| `--level`, `-l` | Analysis level: 1, 2, or 3 (default: 2) |
+| `--exclude`, `-e` | Paths to exclude (can be specified multiple times) |
+| `--verbose`, `-v` | Enable verbose output |
+| `--fail-on` | Exit with error if vulnerabilities at or above this severity (default: HIGH) |
+
+### Examples
+
+```bash
+# Basic scan
+cve-sentinel scan
+
+# Scan with exclusions
+cve-sentinel scan --exclude node_modules --exclude dist
+
+# CI/CD usage - fail on critical vulnerabilities only
+cve-sentinel scan --fail-on CRITICAL
+
+# Verbose deep scan
+cve-sentinel scan /path/to/project --level 3 --verbose
+```
+
+---
+
+## Configuration (Optional)
+
+For persistent settings, create `.cve-sentinel.yaml` in your project root:
 
 ```yaml
 # Scan settings
-target_path: ./
 analysis_level: 2
 
 # Exclude paths (e.g., test fixtures)
@@ -136,6 +180,8 @@ cache_ttl_hours: 24
 # Auto-scan on Claude Code startup
 auto_scan_on_startup: true
 ```
+
+CLI options override configuration file settings.
 
 ---
 
