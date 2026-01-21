@@ -283,6 +283,77 @@ CVE Sentinel is designed to work seamlessly with [Claude Code](https://claude.ai
 
 ---
 
+## Troubleshooting
+
+### Common Errors
+
+#### API Rate Limiting
+
+```
+Error querying OSV for npm: OSV API bad request: {"code":3,"message":"Too many queries."}
+```
+
+**Cause:** Too many requests to OSV API in a short period.
+
+**Solution:** The tool automatically retries with exponential backoff. For large projects, the scan may take longer. If errors persist, wait a few minutes and try again.
+
+---
+
+#### CVSS Score Parsing Error
+
+```
+could not convert string to float: 'CVSS:3.1/AV:N/AC:L/...'
+```
+
+**Cause:** Older version of CVE Sentinel. This was fixed in recent updates.
+
+**Solution:** Update to the latest version:
+```bash
+pip install --upgrade git+https://github.com/cawa102/cveSentinel.git
+```
+
+---
+
+#### Configuration Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `analysis_level must be between 1 and 3` | Invalid analysis level | Use `--level 1`, `2`, or `3` |
+| `target_path does not exist` | Invalid scan path | Check the path exists |
+| `Failed to parse YAML config file` | Invalid YAML syntax | Check `.cve-sentinel.yaml` syntax |
+
+---
+
+#### NVD API Errors
+
+```
+NVD API rate limit exceeded
+```
+
+**Cause:** NVD API has strict rate limits without an API key (5 requests per 30 seconds).
+
+**Solution:** Get a free API key from [NVD](https://nvd.nist.gov/developers/request-an-api-key) and set it:
+```bash
+export CVE_SENTINEL_NVD_API_KEY=your-api-key-here
+```
+
+---
+
+#### Python Version Error
+
+```
+Package 'cve-sentinel' requires a different Python: 3.8.x not in '>=3.9'
+```
+
+**Cause:** Python version is too old.
+
+**Solution:** Use Python 3.9 or later:
+```bash
+python3.9 -m pip install git+https://github.com/cawa102/cveSentinel.git
+```
+
+---
+
 ## Development
 
 ```bash
