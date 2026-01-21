@@ -5,7 +5,7 @@
 <h1 align="center">CVE Sentinel</h1>
 
 <p align="center">
-  <strong>Your AI-Powered Security Guardian for Claude Code</strong>
+  <strong>Your AI-Powered Security Guardian</strong>
 </p>
 
 <p align="center">
