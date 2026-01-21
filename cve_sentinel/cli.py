@@ -269,14 +269,14 @@ def cmd_update(args: argparse.Namespace) -> int:
     try:
         cmd = [sys.executable, "-m", "pip", "install", "--upgrade", "cve-sentinel"]
         if args.verbose:
-            result = subprocess.run(cmd)
+            result = subprocess.run(cmd, text=True)
         else:
             result = subprocess.run(cmd, capture_output=True, text=True)
 
         if result.returncode == 0:
             print("CVE Sentinel package updated successfully")
         else:
-            if hasattr(result, "stderr") and result.stderr:
+            if result.stderr:
                 print(f"Update failed: {result.stderr}")
             return 1
 
