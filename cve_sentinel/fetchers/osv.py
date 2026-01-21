@@ -156,8 +156,9 @@ class OSVClient:
 
     BASE_URL = "https://api.osv.dev/v1"
     DEFAULT_TIMEOUT = 30
-    MAX_RETRIES = 3
-    RETRY_DELAY = 1
+    MAX_RETRIES = 5
+    RETRY_DELAY = 2
+    MAX_BATCH_SIZE = 100  # Limit batch size to avoid rate limits
 
     # Ecosystem mapping from internal names to OSV ecosystem names
     ECOSYSTEM_MAP: Dict[str, str] = {
@@ -266,11 +267,37 @@ class OSVClient:
                     return result
 
                 elif response.status_code == 400:
+                    # Check if it's a rate limit error
+                    if "Too many queries" in response.text:
+                        last_error = OSVAPIError(
+                            f"OSV API rate limit: {response.text}",
+                            status_code=400,
+                        )
+                        logger.warning(
+                            f"OSV API rate limited (attempt {attempt + 1}/{self.MAX_RETRIES})"
+                        )
+                        # Wait longer for rate limit
+                        if attempt < self.MAX_RETRIES - 1:
+                            time.sleep(self.RETRY_DELAY * (attempt + 2) * 2)
+                        continue
                     # Bad request - don't retry
                     raise OSVAPIError(
                         f"OSV API bad request: {response.text}",
                         status_code=400,
                     )
+
+                elif response.status_code == 429:
+                    # Rate limit - retry with backoff
+                    last_error = OSVAPIError(
+                        f"OSV API rate limit: {response.text}",
+                        status_code=429,
+                    )
+                    logger.warning(
+                        f"OSV API rate limited (attempt {attempt + 1}/{self.MAX_RETRIES})"
+                    )
+                    if attempt < self.MAX_RETRIES - 1:
+                        time.sleep(self.RETRY_DELAY * (attempt + 2) * 2)
+                    continue
 
                 elif response.status_code == 404:
                     # No results found - return empty response
@@ -452,29 +479,42 @@ class OSVClient:
         if not queries:
             return {}
 
-        data = {"queries": queries}
-        response = self._make_request("/querybatch", data, use_cache=False)
-
         results: Dict[str, List[OSVVulnerability]] = {}
-        batch_results = response.get("results", [])
 
-        for i, result in enumerate(batch_results):
-            if i >= len(package_keys):
-                break
+        # Split into chunks to avoid rate limits
+        import time
 
-            pkg_key = package_keys[i]
-            vulns = result.get("vulns", [])
+        for chunk_start in range(0, len(queries), self.MAX_BATCH_SIZE):
+            chunk_end = min(chunk_start + self.MAX_BATCH_SIZE, len(queries))
+            chunk_queries = queries[chunk_start:chunk_end]
+            chunk_keys = package_keys[chunk_start:chunk_end]
 
-            pkg_vulns: List[OSVVulnerability] = []
-            for vuln_data in vulns:
-                try:
-                    vuln = self._parse_vulnerability(vuln_data)
-                    pkg_vulns.append(vuln)
-                except (KeyError, ValueError) as e:
-                    logger.warning(f"Failed to parse OSV vulnerability: {e}")
-                    continue
+            # Add delay between chunks (except for first chunk)
+            if chunk_start > 0:
+                time.sleep(1)
 
-            results[pkg_key] = pkg_vulns
+            data = {"queries": chunk_queries}
+            response = self._make_request("/querybatch", data, use_cache=False)
+
+            batch_results = response.get("results", [])
+
+            for i, result in enumerate(batch_results):
+                if i >= len(chunk_keys):
+                    break
+
+                pkg_key = chunk_keys[i]
+                vulns = result.get("vulns", [])
+
+                pkg_vulns: List[OSVVulnerability] = []
+                for vuln_data in vulns:
+                    try:
+                        vuln = self._parse_vulnerability(vuln_data)
+                        pkg_vulns.append(vuln)
+                    except (KeyError, ValueError) as e:
+                        logger.warning(f"Failed to parse OSV vulnerability: {e}")
+                        continue
+
+                results[pkg_key] = pkg_vulns
 
         return results
 
