@@ -79,6 +79,19 @@ This sets up a **SessionStart Hook** - CVE Sentinel will automatically scan your
 
 ---
 
+## NVD API Key (Recommended)
+
+For faster scanning, get a free API key from [NVD](https://nvd.nist.gov/developers/request-an-api-key):
+
+```bash
+export NVD_API_KEY=your-api-key-here
+```
+
+Without an API key, requests are rate-limited to 5 per 30 seconds.
+
+
+---
+
 ## How It Works
 
 ```
@@ -96,7 +109,7 @@ This sets up a **SessionStart Hook** - CVE Sentinel will automatically scan your
 
 ---
 
-## Supported Languages
+## Supported Languages (Default)
 
 | Language | Package Managers | Files Analyzed |
 |:--------:|:-----------------|:---------------|
@@ -195,7 +208,7 @@ CLI options override configuration file settings.
 
 ## Custom File Patterns
 
-Projects sometimes use non-standard file names for their dependencies. CVE Sentinel lets you specify additional file patterns to scan:
+Your unique projects sometimes use non-standard file names for their dependencies. CVE Sentinel lets you specify additional file patterns to scan:
 
 ```yaml
 # .cve-sentinel.yaml
@@ -261,18 +274,6 @@ CVE Sentinel is designed to work seamlessly with [Claude Code](https://claude.ai
   ]
 }
 ```
-
----
-
-## NVD API Key (Recommended)
-
-For faster scanning, get a free API key from [NVD](https://nvd.nist.gov/developers/request-an-api-key):
-
-```bash
-export NVD_API_KEY=your-api-key-here
-```
-
-Without an API key, requests are rate-limited to 5 per 30 seconds.
 
 ---
 
