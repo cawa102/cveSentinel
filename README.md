@@ -285,8 +285,6 @@ CVE Sentinel is designed to work seamlessly with [Claude Code](https://claude.ai
 
 ## Troubleshooting
 
-### Common Errors
-
 #### API Rate Limiting
 
 ```
