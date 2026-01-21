@@ -130,7 +130,7 @@ def _get_config_path_from_env() -> Optional[Path]:
 
 
 def _validate_custom_patterns(
-    custom_patterns: Optional[dict[str, dict[str, list[str]]]]
+    custom_patterns: Optional[dict[str, dict[str, list[str]]]],
 ) -> list[str]:
     """Validate custom_patterns configuration.
 
@@ -205,8 +205,7 @@ def _validate_custom_patterns(
                     )
                 elif not pattern:
                     errors.append(
-                        f"custom_patterns.{ecosystem}.{pattern_type}[{i}]: "
-                        "pattern cannot be empty"
+                        f"custom_patterns.{ecosystem}.{pattern_type}[{i}]: pattern cannot be empty"
                     )
 
     return errors

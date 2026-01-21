@@ -170,9 +170,7 @@ class CVESentinelScanner:
                 custom_patterns=get_custom_patterns_for("npm"),
             )
         )
-        registry.register(
-            PythonAnalyzer(custom_patterns=get_custom_patterns_for("pypi"))
-        )
+        registry.register(PythonAnalyzer(custom_patterns=get_custom_patterns_for("pypi")))
         registry.register(
             GoAnalyzer(
                 analysis_level=analysis_level,
