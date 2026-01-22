@@ -57,7 +57,7 @@
 <details>
 <summary>📺 Watch full demo video</summary>
 
-[![Demo Video](https://img.shields.io/badge/▶️_Play_Video-MP4-blue?style=for-the-badge)](https://github.com/cawa102/cveSentinel/raw/main/assets/cveSentinel.mp4)
+https://github.com/user-attachments/assets/2f68c7f1-588e-4904-be80-82407ea3361c
 
 </details>
 
