@@ -56,11 +56,9 @@
 
 <details>
 <summary>📺 Watch full demo video</summary>
-<p align="center">
-  <video src="https://github.com/cawa102/cveSentinel/raw/main/assets/cveSentinel.mp4" width="800" controls>
-    Your browser does not support the video tag.
-  </video>
-</p>
+
+[![Demo Video](https://img.shields.io/badge/▶️_Play_Video-MP4-blue?style=for-the-badge)](https://github.com/cawa102/cveSentinel/raw/main/assets/cveSentinel.mp4)
+
 </details>
 
 ---
