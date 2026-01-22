@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  Automatically detect vulnerabilities in your dependencies before they become threats.
+  Automatically detect vulnerabilities in your dependencies before they are hacked.
 </p>
 
 <p align="center">
@@ -26,9 +26,6 @@
   </a>
   <a href="https://pypi.org/project/cve-sentinel/">
     <img src="https://img.shields.io/pypi/pyversions/cve-sentinel.svg" alt="Python Versions">
-  </a>
-  <a href="https://pepy.tech/project/cve-sentinel">
-    <img src="https://pepy.tech/badge/cve-sentinel" alt="Downloads">
   </a>
 </p>
 
@@ -57,13 +54,11 @@
   <img src="assets/cveSentinel.gif" alt="CVE Sentinel Demo" width="800">
 </p>
 
-https://github.com/user-attachments/assets/25634a88-8ed0-4da4-9b11-4e924ad87adf
-
 ---
 
 ## Why CVE Sentinel?
 
-### Built for the AI Coding Era
+### Built for the AI-driven Era
 
 Traditional vulnerability scanners run periodically in CI/CD pipelines — but AI-driven development moves faster. When you're building with Claude Code, new dependencies get added in real-time. **CVE Sentinel** provides always-on protection that activates the moment you start coding, catching vulnerabilities before they ever reach your repository.
 
