@@ -54,6 +54,15 @@
   <img src="assets/cveSentinel.gif" alt="CVE Sentinel Demo" width="800">
 </p>
 
+<details>
+<summary>📺 Watch full demo video</summary>
+<p align="center">
+  <video src="https://github.com/cawa102/cveSentinel/raw/main/assets/cveSentinel.mp4" width="800" controls>
+    Your browser does not support the video tag.
+  </video>
+</p>
+</details>
+
 ---
 
 ## Why CVE Sentinel?
