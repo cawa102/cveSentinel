@@ -13,14 +13,39 @@
 </p>
 
 <p align="center">
+  <!-- CI & Coverage -->
   <a href="https://github.com/cawa102/cveSentinel/actions/workflows/ci.yml">
     <img src="https://github.com/cawa102/cveSentinel/actions/workflows/ci.yml/badge.svg" alt="CI">
   </a>
-  <a href="https://www.python.org/downloads/">
-    <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+">
+  <a href="https://codecov.io/gh/cawa102/cveSentinel">
+    <img src="https://codecov.io/gh/cawa102/cveSentinel/branch/main/graph/badge.svg" alt="Coverage">
+  </a>
+  <!-- Package Info -->
+  <a href="https://pypi.org/project/cve-sentinel/">
+    <img src="https://img.shields.io/pypi/v/cve-sentinel.svg" alt="PyPI">
+  </a>
+  <a href="https://pypi.org/project/cve-sentinel/">
+    <img src="https://img.shields.io/pypi/pyversions/cve-sentinel.svg" alt="Python Versions">
+  </a>
+  <a href="https://pepy.tech/project/cve-sentinel">
+    <img src="https://pepy.tech/badge/cve-sentinel" alt="Downloads">
+  </a>
+</p>
+
+<p align="center">
+  <!-- Community -->
+  <a href="https://github.com/cawa102/cveSentinel/stargazers">
+    <img src="https://img.shields.io/github/stars/cawa102/cveSentinel.svg?style=social" alt="Stars">
+  </a>
+  <a href="https://github.com/cawa102/cveSentinel/issues">
+    <img src="https://img.shields.io/github/issues/cawa102/cveSentinel.svg" alt="Issues">
   </a>
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+  </a>
+  <!-- Security -->
+  <a href="https://github.com/cawa102/cveSentinel/security/policy">
+    <img src="https://img.shields.io/badge/Security-Policy-blue.svg" alt="Security Policy">
   </a>
 </p>
 
