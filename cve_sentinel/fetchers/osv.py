@@ -507,11 +507,18 @@ class OSVClient:
 
                 pkg_vulns: List[OSVVulnerability] = []
                 for vuln_data in vulns:
+                    vuln_id = vuln_data.get("id")
+                    if not vuln_id:
+                        continue
+
+                    # querybatch only returns ID and modified date, not full details
+                    # We need to fetch full vulnerability data for affected version info
                     try:
-                        vuln = self._parse_vulnerability(vuln_data)
-                        pkg_vulns.append(vuln)
-                    except (KeyError, ValueError) as e:
-                        logger.warning(f"Failed to parse OSV vulnerability: {e}")
+                        full_vuln = self.get_vulnerability(vuln_id)
+                        if full_vuln:
+                            pkg_vulns.append(full_vuln)
+                    except (OSVAPIError, KeyError, ValueError) as e:
+                        logger.warning(f"Failed to fetch vulnerability {vuln_id}: {e}")
                         continue
 
                 results[pkg_key] = pkg_vulns
@@ -527,6 +534,14 @@ class OSVClient:
         Returns:
             OSVVulnerability object if found, None otherwise.
         """
+        # Check cache first
+        cache_key = f"osv_vuln_{vuln_id}"
+        if self.cache:
+            cached = self.cache.get(cache_key)
+            if cached:
+                logger.debug(f"Cache hit for vulnerability: {vuln_id}")
+                return self._parse_vulnerability(cached)
+
         url = f"{self.BASE_URL}/vulns/{vuln_id}"
 
         try:
@@ -534,6 +549,9 @@ class OSVClient:
 
             if response.status_code == 200:
                 vuln_data = response.json()
+                # Cache the result
+                if self.cache:
+                    self.cache.set(cache_key, vuln_data)
                 return self._parse_vulnerability(vuln_data)
             elif response.status_code == 404:
                 return None
