@@ -76,13 +76,11 @@ Every day, new vulnerabilities are discovered in popular packages. **CVE Sentine
 ### Installation
 
 ```bash
-# Install from GitHub
-pip install git+https://github.com/cawa102/cveSentinel.git
+# Install from PyPI
+pip install cve-sentinel
 
-# Or clone and install locally
-git clone https://github.com/cawa102/cveSentinel.git
-cd cveSentinel
-pip install .
+# Or install from GitHub (latest development version)
+pip install git+https://github.com/cawa102/cveSentinel.git
 ```
 
 ### Scan Your Project
@@ -320,7 +318,7 @@ could not convert string to float: 'CVSS:3.1/AV:N/AC:L/...'
 
 **Solution:** Update to the latest version:
 ```bash
-pip install --upgrade git+https://github.com/cawa102/cveSentinel.git
+pip install --upgrade cve-sentinel
 ```
 
 ---
@@ -360,7 +358,7 @@ Package 'cve-sentinel' requires a different Python: 3.8.x not in '>=3.9'
 
 **Solution:** Use Python 3.9 or later:
 ```bash
-python3.9 -m pip install git+https://github.com/cawa102/cveSentinel.git
+python3.9 -m pip install cve-sentinel
 ```
 
 ---
