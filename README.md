@@ -119,11 +119,7 @@ No configuration file required - just run and scan!
 
 ### Auto-scan with Claude Code (Optional)
 
-```bash
-cve-sentinel init
-```
-
-This sets up a **SessionStart Hook** - CVE Sentinel will automatically scan your project every time you launch Claude Code.
+Want CVE Sentinel to automatically scan every time you start Claude Code? See [How to Work with Claude Code](#how-to-work-with-claude-code) for setup instructions.
 
 ---
 
@@ -288,13 +284,104 @@ Custom patterns **extend** the defaults - your standard files are always scanned
 
 ---
 
-## Claude Code Integration
+## How to Work with Claude Code
 
-CVE Sentinel is designed to work seamlessly with [Claude Code](https://claude.ai/code). After running `cve-sentinel init`, it will:
+CVE Sentinel integrates with [Claude Code](https://claude.ai/code) as a **SessionStart Hook**. Once configured, it automatically scans your project for vulnerabilities every time you launch Claude Code.
 
-1. Automatically scan your project when you start a Claude Code session
-2. Report vulnerabilities directly in your conversation
-3. Suggest fixes that Claude can help you implement
+### Quick Setup (Recommended)
+
+Run the install script to set up everything automatically:
+
+```bash
+# Clone the repository
+git clone https://github.com/cawa102/cveSentinel.git
+cd cveSentinel
+
+# Run the installer
+./scripts/install.sh
+```
+
+This script:
+- Installs the `cve-sentinel` package
+- Creates the hook script at `~/.claude/hooks/cve-sentinel-scan.sh`
+- Configures Claude Code's `~/.claude/settings.json`
+
+### Manual Setup
+
+If you prefer manual configuration or already have `cve-sentinel` installed via pip:
+
+```
+
+#### Step 1: Create the hook script
+
+Create `~/.claude/hooks/cve-sentinel-scan.sh`:
+
+```bash
+#!/bin/bash
+PROJECT_DIR="${1:-.}"
+
+should_scan() {
+    if [ -f "$PROJECT_DIR/.cve-sentinel.yaml" ]; then
+        return 0
+    fi
+    for file in package.json requirements.txt pyproject.toml Gemfile Cargo.toml go.mod composer.json pom.xml build.gradle; do
+        if [ -f "$PROJECT_DIR/$file" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+if should_scan; then
+    nohup cve-sentinel scan --path "$PROJECT_DIR" > /dev/null 2>&1 &
+fi
+```
+
+Make it executable:
+
+```bash
+chmod +x ~/.claude/hooks/cve-sentinel-scan.sh
+```
+
+#### Step 2: Configure Claude Code settings
+
+Add the hook to `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "sessionStart": [
+      {
+        "name": "cve-sentinel",
+        "command": "~/.claude/hooks/cve-sentinel-scan.sh",
+        "args": ["${projectPath}"],
+        "enabled": true
+      }
+    ]
+  }
+}
+```
+
+### Project Configuration (Optional)
+
+For project-specific settings, run in your project directory:
+
+```bash
+cve-sentinel init
+```
+
+This creates:
+- `.cve-sentinel.yaml` - Configuration file for custom settings
+- `.cve-sentinel/` - Directory for scan results and cache
+
+### How It Works with Claude Code
+
+Once configured:
+
+1. **Session Start** - Hook triggers automatically when you launch Claude Code
+2. **Background Scan** - CVE Sentinel scans dependencies without blocking your session
+3. **Results Available** - Check `.cve-sentinel/results.json` for vulnerability details
+4. **Claude Assistance** - Ask Claude to review results and help implement fixes
 
 ---
 
